@@ -11,7 +11,7 @@ TextureManager::TextureManager()
 {
 	red = new Color(255, 0, 0);
 	green = new Color(0,255,0);
-	blue = new Color(0,38,255);
+	blue = new Color(0,0,255);
 	pink = new Color(255,0,220); 
 	PullTextures();
 }
