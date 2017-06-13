@@ -14,10 +14,10 @@ GameScene::GameScene()
 void GameScene::StartUp()
 {
 	std::cout << nameOfScene << std::endl;
-	blueBucket = new Bucket("./textures/BlueBucket.png", Vector2(15, 15));
-	greenBucket = new Bucket("./textures/GreenBucket.png", Vector2(165, 15));
-	pinkBucket = new Bucket("./textures/PinkBucket.png", Vector2(265, 15));
-	redBucket = new Bucket("./textures/RedBucket.png", Vector2(365, 15));
+	blueBucket = new Bucket("./textures/BlueBucket.png", Vector2(15, 15), "BlueBucket");
+	greenBucket = new Bucket("./textures/GreenBucket.png", Vector2(165, 15), "GreenBucket");
+	pinkBucket = new Bucket("./textures/PinkBucket.png", Vector2(265, 15), "PinkBucket");
+	redBucket = new Bucket("./textures/RedBucket.png", Vector2(365, 15), "RedBucket");
 
 }
 
@@ -39,9 +39,14 @@ void GameScene::Update(float deltaTime)
 
 void GameScene::Draw(aie::Renderer2D* renderer)
 {
+	GOarray = GameManager::instance().om->getGOArray();
 	for (size_t i = 0; i < GOarray.size(); i++)
 	{
-		GOarray[i]->Draw(renderer);
+		if(GOarray[i] != nullptr)
+		{
+			GOarray[i]->Draw(renderer);
+		}
+
 	}
 }
 

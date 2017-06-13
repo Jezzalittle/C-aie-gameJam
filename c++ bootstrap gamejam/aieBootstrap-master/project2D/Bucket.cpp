@@ -4,11 +4,12 @@
 
 
 
-Bucket::Bucket(std::string textureName , Vector2 pos) : GameObject()
+Bucket::Bucket(std::string textureName , Vector2 pos, std::string a_tag) : GameObject()
 {
-	tag = "Bucket";
+	tag = a_tag;
 	transform.SetPosition(pos);
 	texture = GameManager::instance().tm->FindByFileName(textureName);
+	radius = texture->getHeight() / 2;
 	dragging = false;
 	radius = texture->getWidth() / 2;
 }

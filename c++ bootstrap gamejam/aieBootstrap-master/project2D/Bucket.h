@@ -5,7 +5,7 @@
 class Bucket : GameObject
 {
 public:
-	Bucket(std::string textureName, Vector2 pos);
+	Bucket(std::string textureName, Vector2 pos, std::string a_tag);
 	~Bucket();
 	
 	void Update(float deltaTime);
