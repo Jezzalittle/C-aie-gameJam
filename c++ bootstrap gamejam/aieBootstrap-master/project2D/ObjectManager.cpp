@@ -18,7 +18,7 @@ void ObjectManager::addGameObject(GameObject * go)
 	goArray.push_back(go);
 }
 
-std::vector<GameObject*>& ObjectManager::getGOArray()
+std::vector<GameObject*> ObjectManager::getGOArray()
 {
 	return goArray;
 }

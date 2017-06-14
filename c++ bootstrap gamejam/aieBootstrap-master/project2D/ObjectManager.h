@@ -9,7 +9,7 @@ public:
 	~ObjectManager();
 
 	void addGameObject(GameObject* go);
-	std::vector<GameObject*>& getGOArray();
+	std::vector<GameObject*> getGOArray();
 
 	
 private:

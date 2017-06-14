@@ -42,8 +42,3 @@ protected:
 };
 
 
-
-//25c513 (green)
-//FF0000 (red)
-//0026FF (blue)
-//FF00DC (pink)

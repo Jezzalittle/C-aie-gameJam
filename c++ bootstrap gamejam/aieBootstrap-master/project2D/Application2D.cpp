@@ -18,7 +18,7 @@ Application2D::~Application2D() {
 
 bool Application2D::startup() {
 	
-	input->getInstance;
+
 	GameManager& gm = GameManager::instance();
 	gm.screenRes = (Vector2(getWindowWidth(), getWindowHeight()));
 	renderer = new aie::Renderer2D();

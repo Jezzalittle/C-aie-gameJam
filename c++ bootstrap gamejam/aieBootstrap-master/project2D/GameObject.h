@@ -18,6 +18,7 @@ public:
 	void SetRadius(float a_radius);
 
 	Vector2 GetPosition();
+	void SetPosition(Vector2 a_vec);
 
 	std::string GetTag();
 	void SetTag(std::string a_tag);

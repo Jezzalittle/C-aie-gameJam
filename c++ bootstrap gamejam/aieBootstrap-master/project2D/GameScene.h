@@ -2,10 +2,21 @@
 #include "Application2D.h"
 #include "Scene.h"
 #include <vector>
+#include <Windows.h>
+#include "Vector2.h"
 
 class Bucket;
 class Paint;
 class GameObject;
+
+
+struct SharedData
+{
+	std::string bucketName;
+	Vector2 sharedValue;
+	bool enterPressed;
+};
+
 
 class GameScene : public Scene
 {
@@ -26,9 +37,12 @@ private:
 	Bucket* pinkBucket;
 	Bucket* redBucket;
 
-
+	std::string oldBucketName;
+	Vector2 oldVec;
+	SharedData* data;
 
 	float gameTimer;
 
 };
+
 

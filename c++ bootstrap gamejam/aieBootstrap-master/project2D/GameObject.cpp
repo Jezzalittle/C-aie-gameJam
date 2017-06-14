@@ -1,7 +1,6 @@
 #include "GameObject.h"
 #include "GameManager.h"
-#include <vector>
-#include <algorithm>
+
 
 GameObject::GameObject()
 {
@@ -12,9 +11,6 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
-	std::cout << GameManager::instance().om->getGOArray().size() << std::endl;
-	GameManager::instance().om->getGOArray().erase(std::remove(GameManager::instance().om->getGOArray().begin(), GameManager::instance().om->getGOArray().end(), this), GameManager::instance().om->getGOArray().end());
-	std::cout << GameManager::instance().om->getGOArray().size() << std::endl;
 }
 
 void GameObject::Update(float deltaTime)
@@ -42,6 +38,11 @@ void GameObject::SetRadius(float a_radius)
 Vector2 GameObject::GetPosition()
 {
 	return transform.GetPosition();
+}
+
+void GameObject::SetPosition(Vector2 a_vec)
+{
+	transform.SetPosition(a_vec);
 }
 
 std::string GameObject::GetTag()
