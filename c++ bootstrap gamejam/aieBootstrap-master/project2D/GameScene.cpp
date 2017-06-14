@@ -33,17 +33,20 @@ void GameScene::StartUp()
 void GameScene::Update(float deltaTime)
 {
 	gameTimer += deltaTime;
-	GOarray = GameManager::instance().om->getGOArray();
-	for (size_t i = 0; i < GOarray.size(); i++)
+	std::vector<GameObject*>& GOarrayReference = GameManager::instance().om->getGOArray();
+	for (size_t i = 0; i < GOarrayReference.size(); i++)
 	{
-		GOarray[i]->Update(deltaTime);
+		if (GOarrayReference[i] != nullptr)
+		{
+			GOarrayReference[i]->Update(deltaTime);
+		}
 	}
 	if (gameTimer >= 3)
 	{
 		new Paint();
 		gameTimer = 0;
 	}
-	GameManager::instance().cm->UpdateCollision(GOarray);
+	GameManager::instance().cm->UpdateCollision(GOarrayReference);
 
 	if (data != nullptr)
 	{
@@ -56,11 +59,11 @@ void GameScene::Update(float deltaTime)
 				oldVec = data->sharedValue;
 
 
-				for (size_t i = 0; i < GOarray.size(); i++)
+				for (size_t i = 0; i < GOarrayReference.size(); i++)
 				{
-					if (GOarray[i]->GetTag() == oldBucketName)
+					if (GOarrayReference[i]->GetTag() == oldBucketName)
 					{
-						GOarray[i]->SetPosition(oldVec);
+						GOarrayReference[i]->SetPosition(oldVec);
 					}
 				}
 			}
@@ -73,9 +76,13 @@ void GameScene::Update(float deltaTime)
 
 void GameScene::Draw(aie::Renderer2D* renderer)
 {
-	for (size_t i = 0; i < GOarray.size(); i++)
+	int size = GameManager::instance().om->getGOArray().size();
+	for (size_t i = 0; i < size; i++)
 	{
-		GOarray[i]->Draw(renderer);
+		if (GameManager::instance().om->getGOArray()[i] != nullptr)
+		{
+			GameManager::instance().om->getGOArray()[i]->Draw(renderer);
+		}
 	}
 }
 

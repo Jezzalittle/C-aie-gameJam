@@ -1,17 +1,27 @@
 #include "GameObject.h"
 #include "GameManager.h"
-
-
+#include <algorithm>
+#include <vector>
 GameObject::GameObject()
 {
 	transform = Transform();
 	GameManager::instance().om->addGameObject(this);
+
 }
+
 
 
 GameObject::~GameObject()
 {
+	std::cout << GameManager::instance().om->getGOArray().size() << std::endl;
+
+	auto gameObjectFound = std::find(GameManager::instance().om->getGOArray().begin(), GameManager::instance().om->getGOArray().end(), this);
+	GameManager::instance().om->getGOArray().erase(gameObjectFound);
+
+	std::cout << " " << std::endl;
+	std::cout << GameManager::instance().om->getGOArray().size() << std::endl;
 }
+
 
 void GameObject::Update(float deltaTime)
 {

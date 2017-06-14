@@ -2,6 +2,14 @@
 #include "GameManager.h"
 
 
+Bucket::Bucket(std::string textureName, Vector2 pos, std::string a_tag) : GameObject()
+{
+	tag = a_tag;
+	transform.SetPosition(pos);
+	texture = GameManager::instance().tm->FindByFileName(textureName);
+	dragging = false;
+	radius = texture->getWidth() / 2.0f;
+}
 
 Bucket::Bucket(std::string textureName , Vector2 pos) : GameObject()
 {
@@ -9,6 +17,7 @@ Bucket::Bucket(std::string textureName , Vector2 pos) : GameObject()
 	transform.SetPosition(pos);
 	texture = GameManager::instance().tm->FindByFileName(textureName);
 	dragging = false;
+	radius = texture->getWidth() / 2.0f;
 }
 
 Bucket::~Bucket()
@@ -51,11 +60,3 @@ void Bucket::Draw(aie::Renderer2D * renderer)
 	renderer->drawSpriteTransformed3x3(texture, (float*)transform.GetLocalMatrix());
 }
 
-
-Bucket::Bucket(std::string textureName, Vector2 pos, std::string a_tag) : GameObject()
-{
-	tag = a_tag;
-	transform.SetPosition(pos);
-	texture = GameManager::instance().tm->FindByFileName(textureName);
-	dragging = false;
-}
