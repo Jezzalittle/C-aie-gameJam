@@ -33,22 +33,25 @@ Renderer2D::Renderer2D() {
 		m_textureStack[i] = nullptr;
 		m_fontTexture[i] = 0;
 	}
-
+	//TODO - update shader with time
 	char* vertexShader = "#version 150\n \
 						in vec4 position; \
 						in vec4 colour; \
 						in vec2 texcoord; \
+						in float timeOffset; \
 						out vec4 vColour; \
 						out vec2 vTexCoord; \
 						out float vTextureID; \
+						out float vTimeOffset; \
 						uniform mat4 projectionMatrix; \
-						void main() { vColour = colour; vTexCoord = texcoord; vTextureID = position.w; \
+						void main() { vColour = colour; vTexCoord = texcoord; vTimeOffset = timeOffset; vTextureID = position.w; \
 						gl_Position = projectionMatrix * vec4(position.x, position.y, position.z, 1.0f); }";
 
 	char* fragmentShader = "#version 150\n \
 						in vec4 vColour; \
 						in vec2 vTexCoord; \
 						in float vTextureID; \
+						in float vTimeOffset;\
 						out vec4 fragColour; \
 						const int TEXTURE_STACK_SIZE = 16; \
 						uniform sampler2D textureStack[TEXTURE_STACK_SIZE]; \
@@ -59,8 +62,14 @@ Renderer2D::Renderer2D() {
 								vec4 rgba = texture2D(textureStack[id], vTexCoord); \
 								if (isFontTexture[id] == 1) \
 									rgba = rgba.rrrr; \
-								fragColour = rgba * vColour; \
-							} else fragColour = vColour; \
+									if(rgba.a > 0.1f)\
+										rgba.r = sin(vTimeOffset);    \
+										rgba.g = cos(vTimeOffset);    \
+										rgba.b = cos(vTimeOffset);    \
+								fragColour = rgba * vColour;	\
+							}									\
+							else								 \
+								fragColour = vColour; \
 						if (fragColour.a < 0.1f) discard; }";
 	
 	unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
@@ -78,6 +87,7 @@ Renderer2D::Renderer2D() {
 	glBindAttribLocation(m_shader, 0, "position");
 	glBindAttribLocation(m_shader, 1, "colour");
 	glBindAttribLocation(m_shader, 2, "texcoord");
+	glBindAttribLocation(m_shader, 3, "timeOffset"); //TODO - bind our time to the shader
 	glLinkProgram(m_shader);
 
 	int success = GL_FALSE;
@@ -131,9 +141,14 @@ Renderer2D::Renderer2D() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3); //TODO - enable the extra attribute array
+
+			   //pos    colour   texcoord   time
+	//Vertex [   16       16        8        4     ]
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)16);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)32);
+	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)40); //TODO - setup pointer to our time value
 	glBindVertexArray(0);
 }
 
@@ -542,6 +557,31 @@ void Renderer2D::drawLine(float x1, float y1, float x2, float y2, float thicknes
 	setUVRect(uvX, uvY, uvW, uvH);
 }
 
+
+float Renderer2D::measureTextWidth(Font *font, const char *text)
+{
+	stbtt_aligned_quad Q = {};
+	float stringHeight = 0;
+	float stringWidth = 0;
+	float xPos = 0.0f;
+	float yPos = 0.0f;
+
+	while (*text != 0)
+	{
+		stbtt_GetBakedQuad(
+			(stbtt_bakedchar*)font->m_glyphData,
+			font->m_textureWidth,
+			font->m_textureHeight,
+			(unsigned char)*text, &xPos, &yPos, &Q, 1);
+
+		text++;
+	}
+
+	// get the position of the last vert for the last character rendered.
+	return Q.x1; // x0 is the left vert for the quad. x1 is the right vert for the quad.
+
+}
+
 void Renderer2D::drawText(Font * font, const char* text, float xPos, float yPos, float depth) {
 
 	if (font == nullptr ||
@@ -659,6 +699,16 @@ void Renderer2D::flushBatch() {
 	glBindVertexArray(m_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+
+	//TODO - edit time to add fakeTimer to our shader
+	fakeTimer += 0.01f;
+
+	for (int i = 0; i < m_currentVertex; i++)
+	{
+		m_vertices[i].timeOffset = fakeTimer;
+	}
+
+
 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_currentVertex * sizeof(SBVertex), m_vertices);
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_currentIndex * sizeof(unsigned short), m_indices);

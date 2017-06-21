@@ -46,6 +46,10 @@ public:
 	void setCameraPos(float x, float y) { m_cameraX = x; m_cameraY = y; }
 	void getCameraPos(float& x, float& y) const { x = m_cameraX; y = m_cameraY; }
 
+	// returns the width in pixels for the given text.
+	// this is usefull for center alligning text.
+	float measureTextWidth(Font *font, const char *text);
+
 protected:
 
 	// helper methods used during drawing
@@ -78,6 +82,7 @@ protected:
 		float pos[4];
 		float color[4];
 		float texcoord[2];
+		float timeOffset; //TODO - add time to vertex
 	};
 
 	// data used for opengl to draw the sprites (with padding)
@@ -94,6 +99,8 @@ protected:
 
 	// data used for a virtual camera
 	float	m_projectionMatrix[16];
+
+	float fakeTimer = 0.0f;
 };
 
 } // namespace aie
