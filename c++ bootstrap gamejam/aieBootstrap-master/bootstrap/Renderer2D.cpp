@@ -5,6 +5,7 @@
 #include "Font.h"
 #include <glm/ext.hpp>
 #include <stb_truetype.h>
+#include <ctime>
 
 namespace aie {
 
@@ -62,10 +63,10 @@ Renderer2D::Renderer2D() {
 								vec4 rgba = texture2D(textureStack[id], vTexCoord); \
 								if (isFontTexture[id] == 1) \
 									rgba = rgba.rrrr; \
+									rgba.r = seconds \
+									rgba.g = minutes \
+									rgba.b = hours \
 									if(rgba.a > 0.1f)\
-										rgba.r = sin(vTimeOffset);    \
-										rgba.g = cos(vTimeOffset);    \
-										rgba.b = cos(vTimeOffset);    \
 								fragColour = rgba * vColour;	\
 							}									\
 							else								 \
@@ -88,6 +89,11 @@ Renderer2D::Renderer2D() {
 	glBindAttribLocation(m_shader, 1, "colour");
 	glBindAttribLocation(m_shader, 2, "texcoord");
 	glBindAttribLocation(m_shader, 3, "timeOffset"); //TODO - bind our time to the shader
+	glBindAttribLocation(m_shader, 4, "seconds"); 
+	glBindAttribLocation(m_shader, 5, "minutes"); 
+	glBindAttribLocation(m_shader, 6, "hours"); 
+
+
 	glLinkProgram(m_shader);
 
 	int success = GL_FALSE;
@@ -142,6 +148,9 @@ Renderer2D::Renderer2D() {
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3); //TODO - enable the extra attribute array
+	glEnableVertexAttribArray(4); 
+	glEnableVertexAttribArray(5); 
+	glEnableVertexAttribArray(6); 
 
 			   //pos    colour   texcoord   time
 	//Vertex [   16       16        8        4     ]
@@ -149,6 +158,10 @@ Renderer2D::Renderer2D() {
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)16);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)32);
 	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)40); //TODO - setup pointer to our time value
+	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)46); 
+	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)52); 
+	glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(SBVertex), (char *)58); 
+
 	glBindVertexArray(0);
 }
 
@@ -700,13 +713,41 @@ void Renderer2D::flushBatch() {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
+
+	tm *ltm = localtime(&now);
+
+
 	//TODO - edit time to add fakeTimer to our shader
 	fakeTimer += 0.01f;
+
 
 	for (int i = 0; i < m_currentVertex; i++)
 	{
 		m_vertices[i].timeOffset = fakeTimer;
 	}
+	
+	fakeSeconds = ltm->tm_sec;
+
+	for (int i = 0; i < m_currentVertex; i++)
+	{
+		m_vertices[i].seconds = fakeSeconds;
+	}
+
+	fakeMinutes = ltm->tm_min;
+
+	for (int i = 0; i < m_currentVertex; i++)
+	{
+		m_vertices[i].minutes = fakeMinutes;
+	}
+
+	fakeHours = ltm->tm_hour;
+
+	for (int i = 0; i < m_currentVertex; i++)
+	{
+		m_vertices[i].hours = fakeHours;
+	}
+
+
 
 
 

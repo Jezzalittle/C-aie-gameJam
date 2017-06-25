@@ -1,4 +1,5 @@
 #pragma once
+#include <ctime>
 
 namespace aie {
 
@@ -83,6 +84,9 @@ protected:
 		float color[4];
 		float texcoord[2];
 		float timeOffset; //TODO - add time to vertex
+		float seconds;
+		float minutes;
+		float hours;
 	};
 
 	// data used for opengl to draw the sprites (with padding)
@@ -101,6 +105,12 @@ protected:
 	float	m_projectionMatrix[16];
 
 	float fakeTimer = 0.0f;
+	time_t now = time(0);
+
+	float fakeSeconds;
+	float fakeMinutes;
+	float fakeHours;
+
 };
 
 } // namespace aie
