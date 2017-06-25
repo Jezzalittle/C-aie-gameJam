@@ -105,7 +105,7 @@ protected:
 	float	m_projectionMatrix[16];
 
 	float fakeTimer = 0.0f;
-	time_t now = time(0);
+
 
 	float fakeSeconds;
 	float fakeMinutes;

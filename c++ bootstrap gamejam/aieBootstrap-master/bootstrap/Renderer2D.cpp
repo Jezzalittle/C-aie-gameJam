@@ -6,6 +6,8 @@
 #include <glm/ext.hpp>
 #include <stb_truetype.h>
 #include <ctime>
+#include <iostream>
+
 
 namespace aie {
 
@@ -61,11 +63,10 @@ Renderer2D::Renderer2D() {
 							int id = int(vTextureID); \
 							if (id < TEXTURE_STACK_SIZE) { \
 								vec4 rgba = texture2D(textureStack[id], vTexCoord); \
-								if (isFontTexture[id] == 1) \
-									rgba = rgba.rrrr; \
 									rgba.r = seconds \
 									rgba.g = minutes \
 									rgba.b = hours \
+								if (isFontTexture[id] == 1) \
 									if(rgba.a > 0.1f)\
 								fragColour = rgba * vColour;	\
 							}									\
@@ -713,12 +714,13 @@ void Renderer2D::flushBatch() {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 
-
+	time_t now = time(0);
 	tm *ltm = localtime(&now);
 
 
 	//TODO - edit time to add fakeTimer to our shader
 	fakeTimer += 0.01f;
+
 
 
 	for (int i = 0; i < m_currentVertex; i++)
@@ -727,6 +729,7 @@ void Renderer2D::flushBatch() {
 	}
 	
 	fakeSeconds = ltm->tm_sec;
+	std::cout << fakeSeconds << std::endl;
 
 	for (int i = 0; i < m_currentVertex; i++)
 	{
@@ -734,6 +737,7 @@ void Renderer2D::flushBatch() {
 	}
 
 	fakeMinutes = ltm->tm_min;
+	std::cout << fakeMinutes << std::endl;
 
 	for (int i = 0; i < m_currentVertex; i++)
 	{
@@ -741,6 +745,7 @@ void Renderer2D::flushBatch() {
 	}
 
 	fakeHours = ltm->tm_hour;
+	std::cout << fakeHours << std::endl;
 
 	for (int i = 0; i < m_currentVertex; i++)
 	{
